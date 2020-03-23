@@ -762,20 +762,19 @@ global virtual class MyTriggers {
 		for (String event : triggerEventsToTriggerHandlers.keyset()) {
 
 			List<MyTriggerSetting__mdt> triggerSettings = triggerEventsToTriggerHandlers.get(event);
-			Map<String, MyTriggerSetting__mdt> triggerSettingMap = new Map<String, MyTriggerSetting__mdt>();
-			List<String> triggerSettingSortKeys = new List<String>();
+			Map<Decimal, MyTriggerSetting__mdt> triggerSettingMap = new Map<Decimal, MyTriggerSetting__mdt>();
+			List<Decimal> triggerSettingSortKeys = new List<Decimal>();
 			List<MyTriggerSetting__mdt> sortedTriggerSettings = new List<MyTriggerSetting__mdt>();
 
 			for (MyTriggerSetting__mdt triggerSetting : triggerSettings) {
-				String sortKey = leftPadWithZero(triggerSetting.Order__c, 4);
-				triggerSettingSortKeys.add(sortKey);
-				triggerSettingMap.put(sortKey, triggerSetting);
+				triggerSettingSortKeys.add(triggerSetting.Order__c);
+				triggerSettingMap.put(triggerSetting.Order__c, triggerSetting);
 			}
 
 			triggerSettingSortKeys.sort();
 
-			for (String s : triggerSettingSortKeys) {
-				sortedTriggerSettings.add(triggerSettingMap.get(s));
+			for (Decimal d : triggerSettingSortKeys) {
+				sortedTriggerSettings.add(triggerSettingMap.get(d));
 			}
 
 			triggerEventsToTriggerHandlers.put(event, sortedTriggerSettings);
@@ -795,29 +794,6 @@ global virtual class MyTriggers {
 
 			 */
 		}
-	}
-
-	/**
-	 * converts the input object to a string of at least the length given as the second parameter
-	 *
-	 * @param Object toPad
-	 * @param Integer targetLength the desired length
-	 *
-	 * @return
-	 */
-	@testvisible static String leftPadWithZero(Object toPad, Integer targetLength) {
-
-		String targetString = String.valueOf(toPad);
-
-		if (targetString.length() > targetLength) {
-			return targetString;
-		}
-
-		while (targetString.length() < targetLength) {
-			targetString = '0' + targetString;
-		}
-
-		return targetString;
 	}
 
 	@testvisible
